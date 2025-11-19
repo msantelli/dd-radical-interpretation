@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { GameState, GameScenario, PlayerTheory, EvaluationResult, Language } from './types';
-import { generateGameScenario, evaluatePlayerTheory } from './services/geminiService';
+import { evaluatePlayerTheory } from './services/geminiService';
 import { FieldNotes } from './components/FieldNotes';
 import { PhilosopherGuide } from './components/PhilosopherGuide';
 import { AboutModal } from './components/AboutModal';
@@ -24,7 +24,12 @@ const App: React.FC = () => {
   
   // Derived state
   const t = appLanguage ? TRANSLATIONS[appLanguage] : TRANSLATIONS['en'];
-  const scenarios = appLanguage ? getScenarios(appLanguage) : [];
+  
+  // Memoize scenarios so random names remain consistent across renders
+  const scenarios = useMemo(() => {
+    return appLanguage ? getScenarios(appLanguage) : [];
+  }, [appLanguage]);
+
   const visibleObservations = scenario ? scenario.observations.slice(0, currentObsIndex + 1) : [];
   const isLastObservation = scenario && currentObsIndex === scenario.observations.length - 1;
   const hasNextLevel = currentLevel < scenarios.length - 1;
@@ -34,8 +39,12 @@ const App: React.FC = () => {
     setGameState(GameState.LOADING);
     setCurrentLevel(levelIndex);
     try {
-      const newScenario = await generateGameScenario(levelIndex, false, appLanguage);
-      setScenario(newScenario);
+      const selectedScenario = scenarios[levelIndex];
+      
+      // Fake delay to simulate loading/travel
+      await new Promise(resolve => setTimeout(resolve, 800));
+      
+      setScenario(selectedScenario);
       setTheory({});
       setCurrentObsIndex(0);
       setGameState(GameState.PLAYING);

@@ -1,10 +1,16 @@
 import { GameScenario } from "../types";
 
+const SUBJECT_NAMES = [
+  "Quine", "Davidson", "Tarski", "Sellars", "Boole", "Cantor", 
+  "Glüer", "Ramberg", "Wikforss", "Verheggen", "Pedace", 
+  "Moretti", "Simpson", "Wittgenstein"
+];
+
 const STATIC_SCENARIOS_EN: GameScenario[] = [
   // LEVEL 1: Reference (Basic Predicates)
   {
     languageName: "Arborean",
-    alienName: "Subject Quine",
+    alienName: "Subject Quine", // Placeholder, will be overwritten
     vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto"],
     solutionKeywords: {
       "Gavagai": ["rabbit", "hare", "bunny", "animal", "critter", "mammal", "coney", "lapin"],
@@ -496,7 +502,15 @@ const STATIC_SCENARIOS_ES: GameScenario[] = [
   ];
 
 export const getScenarios = (lang: 'en' | 'es'): GameScenario[] => {
-    return lang === 'es' ? STATIC_SCENARIOS_ES : STATIC_SCENARIOS_EN;
+    const baseScenarios = lang === 'es' ? STATIC_SCENARIOS_ES : STATIC_SCENARIOS_EN;
+    
+    // Shuffle Subject names
+    const shuffledNames = [...SUBJECT_NAMES].sort(() => 0.5 - Math.random());
+
+    return baseScenarios.map((scenario, index) => ({
+        ...scenario,
+        alienName: `${lang === 'es' ? 'Sujeto' : 'Subject'} ${shuffledNames[index % shuffledNames.length]}`
+    }));
 }
 
 export const STATIC_SCENARIOS = STATIC_SCENARIOS_EN;
