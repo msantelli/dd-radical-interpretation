@@ -3,6 +3,7 @@ import { GameState, GameScenario, PlayerTheory, EvaluationResult, Language } fro
 import { generateGameScenario, evaluatePlayerTheory } from './services/geminiService';
 import { FieldNotes } from './components/FieldNotes';
 import { PhilosopherGuide } from './components/PhilosopherGuide';
+import { AboutModal } from './components/AboutModal';
 import { getScenarios } from './data/staticScenarios';
 import { Icons } from './constants';
 import { TRANSLATIONS } from './data/translations';
@@ -15,6 +16,7 @@ const App: React.FC = () => {
   const [theory, setTheory] = useState<PlayerTheory>({});
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [showGuide, setShowGuide] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(0);
 
   // Randomize the order of the language questions once on mount
@@ -137,6 +139,7 @@ const App: React.FC = () => {
         </div>
 
         {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} lang={appLanguage} />}
+        {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
         
         <div className="max-w-4xl w-full bg-slate-900 border border-emerald-500/30 rounded-xl p-8 shadow-2xl shadow-emerald-900/20 z-10">
           <div className="flex flex-col items-center mb-8">
@@ -185,6 +188,12 @@ const App: React.FC = () => {
             >
               <Icons.Book /> {t.manual}
             </button>
+            <button 
+              onClick={() => setShowAbout(true)}
+              className="px-6 py-2 bg-transparent border border-slate-700 hover:bg-slate-800 text-slate-400 font-mono rounded transition-colors flex items-center gap-2 text-sm"
+            >
+              <Icons.Info /> {t.about}
+            </button>
           </div>
         </div>
       </div>
@@ -205,11 +214,15 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col md:flex-row overflow-hidden relative">
       {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} lang={appLanguage} />}
+      {showAbout && <AboutModal onClose={() => setShowAbout(false)} />}
 
       {/* Top Bar Mobile / Tablet */}
       <div className="md:hidden bg-slate-900 p-3 flex justify-between items-center border-b border-slate-800">
          <span className="text-emerald-400 font-bold font-mono">{t.title}</span>
-         <button onClick={() => setShowGuide(true)} className="p-2 text-slate-400 hover:text-white"><Icons.Book /></button>
+         <div className="flex gap-2">
+            <button onClick={() => setShowAbout(true)} className="p-2 text-slate-400 hover:text-white"><Icons.Info /></button>
+            <button onClick={() => setShowGuide(true)} className="p-2 text-slate-400 hover:text-white"><Icons.Book /></button>
+         </div>
       </div>
 
       {/* Left Panel: Observations & Game Feed */}
@@ -223,6 +236,12 @@ const App: React.FC = () => {
              <span className="text-xs font-mono text-slate-500 ml-8">{t.level} {currentLevel + 1}: {scenario?.languageName.toUpperCase()}</span>
           </div>
           <div className="flex items-center gap-4">
+            <button 
+                onClick={() => setShowAbout(true)}
+                className="hidden md:flex text-xs font-mono text-slate-400 hover:text-emerald-400 items-center gap-1 transition-colors"
+            >
+                <Icons.Info /> {t.about}
+            </button>
             <button 
                 onClick={() => setShowGuide(true)}
                 className="hidden md:flex text-xs font-mono text-slate-400 hover:text-emerald-400 items-center gap-1 transition-colors"
