@@ -3,7 +3,7 @@ import { GameScenario } from "../types";
 const SUBJECT_NAMES = [
   "Quine", "Davidson", "Tarski", "Sellars", "Boole", "Cantor", 
   "Glüer", "Ramberg", "Wikforss", "Verheggen", "Pedace", 
-  "Moretti", "Simpson", "Wittgenstein"
+  "Moretti", "Simpson", "Wittgenstein", "Orayen"
 ];
 
 const STATIC_SCENARIOS_EN: GameScenario[] = [
