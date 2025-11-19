@@ -24,67 +24,92 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose }) =
           
           <section>
             <h3 className="text-amber-400 font-mono font-bold text-lg mb-3 border-l-4 border-amber-500 pl-3">
-              1. The Goal: T-Sentences
+              1. The T-Schema
             </h3>
             <p className="mb-4">
-              In Davidsonian Semantics, you cannot inspect meanings directly. You can only determine the conditions under which a sentence is <strong>True</strong>.
+              To understand a sentence is to know the conditions under which it is true. Your goal is to construct <strong>T-Sentences</strong> for every utterance you hear.
             </p>
-            <div className="bg-slate-950 p-5 rounded border border-slate-800 font-mono text-sm text-emerald-300 shadow-inner">
-              <strong>The T-Schema:</strong><br/>
-              <span className="text-slate-500 opacity-75">Sentence</span> <em>s</em> <span className="text-white">is true if and only if</span> <em>p</em>.
+            <div className="bg-slate-950 p-4 rounded border border-slate-800 text-sm font-mono text-center">
+                <span className="text-emerald-400">"Gavagai"</span> is true <span className="text-slate-500">if and only if</span> <span className="text-amber-400">a rabbit is present</span>.
             </div>
             <p className="mt-4 text-sm text-slate-400">
-              <em>Example:</em> "'Es regnet' is True if and only if it is raining."<br/>
-              Your job is to provide the <em>p</em> (the condition in the world) that makes the alien's utterance <em>s</em> true.
+              Note: Only full sentences (utterances) have truth conditions. Even if the alien says just "Gorm" or "Hek", treat them as linguistic actions asserting a truth about the world.
             </p>
           </section>
 
           <section>
             <h3 className="text-amber-400 font-mono font-bold text-lg mb-3 border-l-4 border-amber-500 pl-3">
-              2. The Tool: Principle of Charity
+              2. Compositionality
             </h3>
             <p>
-              How do you start from scratch? You must assume the speaker is <strong>Rational</strong> and generally <strong>Correct</strong> about their environment.
+              As the language gets more complex, look for patterns. If "Ruz Gorm" means "Red Stone" and "Ruz Vell" means "Red Sky", you can infer that "Ruz" contributes "Red" to the truth conditions of the whole sentence.
             </p>
-            <ul className="list-disc list-inside mt-3 space-y-2 text-slate-400 text-sm">
-              <li>If the alien says "Gavagai" when a rabbit passes, assume they are referring to the rabbit (Truth), not deceiving you.</li>
-              <li>If your theory makes the alien a liar 90% of the time, your theory is likely wrong, not the alien.</li>
-            </ul>
           </section>
 
           <section>
             <h3 className="text-amber-400 font-mono font-bold text-lg mb-3 border-l-4 border-amber-500 pl-3">
               3. The Triangulation
             </h3>
-            <p>
+            <p className="mb-4">
               Davidson argues meaning is not private; it arises from the interaction between two people and a shared world.
             </p>
-            <div className="flex justify-center my-6">
-               <div className="relative w-48 h-24">
-                  <div className="absolute top-0 left-1/2 -translate-x-1/2 text-emerald-400 font-mono text-xs bg-slate-900 px-2 border border-emerald-500/50 rounded">World Object</div>
-                  <div className="absolute bottom-0 left-0 text-amber-400 font-mono text-xs">Subject</div>
-                  <div className="absolute bottom-0 right-0 text-slate-200 font-mono text-xs">Interpreter</div>
-                  
-                  {/* Lines */}
-                  <div className="absolute top-6 left-1/2 w-[1px] h-16 bg-emerald-500/20 -rotate-45 origin-top"></div>
-                  <div className="absolute top-6 left-1/2 w-[1px] h-16 bg-emerald-500/20 rotate-45 origin-top"></div>
-                  <div className="absolute bottom-2 left-12 right-14 h-[1px] bg-emerald-500/20 border-t border-dashed border-slate-600"></div>
-               </div>
+            
+            <div className="bg-slate-950/50 border border-slate-800 rounded-lg p-6 relative flex flex-col items-center justify-between h-48 mb-4 select-none">
+                {/* World Object (Top) */}
+                <div className="z-10 flex flex-col items-center">
+                    <div className="text-3xl mb-1">🍎</div>
+                    <span className="text-xs font-mono text-amber-400 font-bold uppercase tracking-wider">World Object</span>
+                </div>
+
+                {/* Triangle Lines */}
+                <svg className="absolute inset-0 w-full h-full text-slate-600 pointer-events-none">
+                    {/* Left Line (Subject -> Object) */}
+                    <line x1="20%" y1="80%" x2="50%" y2="25%" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
+                    {/* Right Line (Interpreter -> Object) */}
+                    <line x1="80%" y1="80%" x2="50%" y2="25%" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4" />
+                    {/* Bottom Line (Communication) */}
+                    <line x1="25%" y1="85%" x2="75%" y2="85%" stroke="currentColor" strokeWidth="2" />
+                </svg>
+
+                {/* Bottom Row */}
+                <div className="w-full flex justify-between px-4 mt-8 z-10">
+                    <div className="flex flex-col items-center">
+                        <div className="text-3xl mb-1">👽</div>
+                        <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">Subject</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <div className="text-3xl mb-1">🧠</div>
+                        <span className="text-xs font-mono text-blue-400 font-bold uppercase tracking-wider">Interpreter</span>
+                        <span className="text-[10px] text-slate-500">(You)</span>
+                    </div>
+                </div>
             </div>
-            <p className="text-sm text-slate-400">
-              You (the Interpreter) correlate the Subject's behavior with the objects in the World that <em>you also see</em>. This triangulation is what anchors meaning.
+
+            <p>
+              You (the Interpreter) correlate the Subject's behavior with the objects in the World that you also see. This triangulation is what anchors meaning. 
+              <span className="text-emerald-400 italic"> Triangulation and Charity are part of the same process:</span> you cannot interpret the alien without sharing a world with them.
             </p>
           </section>
 
           <section>
             <h3 className="text-amber-400 font-mono font-bold text-lg mb-3 border-l-4 border-amber-500 pl-3">
-              4. Indeterminacy
+              4. The Principle of Charity
             </h3>
             <p>
-              Sometimes, multiple theories fit the evidence perfectly. Does "Gavagai" mean <em>Rabbit</em>, or <em>Undetached Rabbit Parts</em>, or <em>Rabbit-Time-Slice</em>? 
+              To get the triangulation started, you must assume the speaker is <strong>Rational</strong> and generally <strong>Correct</strong> about their environment.
             </p>
-            <p className="mt-2 text-sm text-slate-400">
-              This is the <strong>Indeterminacy of Translation</strong>. There may be no single "fact of the matter" about meaning beyond what is preserved by the T-sentences.
+            <ul className="list-disc list-inside mt-3 space-y-2 text-slate-400 text-sm">
+              <li>If the alien says "Gavagai" when a rabbit passes, assume they are referring to the rabbit (Truth), not deceiving you.</li>
+              <li>Only by assuming they are responding to the same world you see can you begin to assign meanings to their sounds.</li>
+            </ul>
+          </section>
+
+          <section>
+            <h3 className="text-amber-400 font-mono font-bold text-lg mb-3 border-l-4 border-amber-500 pl-3">
+              5. Indeterminacy
+            </h3>
+            <p>
+              Sometimes, multiple theories fit the evidence perfectly. Does "Gavagai" mean <em>Rabbit</em>, or <em>Undetached Rabbit Parts</em>? This is the <strong>Indeterminacy of Translation</strong>.
             </p>
           </section>
 

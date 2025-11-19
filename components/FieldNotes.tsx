@@ -1,20 +1,36 @@
-import React from 'react';
-import { PlayerTheory, GameScenario } from '../types';
+import React, { useMemo } from 'react';
+import { PlayerTheory, GameScenario, Observation } from '../types';
 import { Icons } from '../constants';
 
 interface FieldNotesProps {
   scenario: GameScenario;
+  visibleObservations: Observation[];
   theory: PlayerTheory;
-  onUpdateTheory: (word: string, definition: string) => void;
+  onUpdateTheory: (utterance: string, definition: string) => void;
   disabled: boolean;
 }
 
 export const FieldNotes: React.FC<FieldNotesProps> = ({
   scenario,
+  visibleObservations,
   theory,
   onUpdateTheory,
   disabled
 }) => {
+  
+  // Extract unique utterances seen so far to populate the T-Sentence list
+  const uniqueUtterances = useMemo(() => {
+    const seen = new Set<string>();
+    // We want to maintain order of discovery, so filter the array
+    return visibleObservations
+      .map(obs => obs.utterance)
+      .filter((utterance) => {
+        if (seen.has(utterance)) return false;
+        seen.add(utterance);
+        return true;
+      });
+  }, [visibleObservations]);
+
   return (
     <div className="bg-slate-900 border border-slate-700 rounded-lg p-4 h-full flex flex-col shadow-xl">
       <div className="flex items-center gap-2 mb-4 border-b border-slate-700 pb-2">
@@ -24,28 +40,34 @@ export const FieldNotes: React.FC<FieldNotesProps> = ({
       
       <div className="flex-1 overflow-y-auto space-y-6 pr-2 custom-scrollbar">
         <div className="bg-slate-800/50 p-3 rounded text-xs text-slate-400 font-mono border border-slate-700/50">
-          <strong>INSTRUCTION:</strong> Complete the T-Sentence for each alien term.
+          <strong>INSTRUCTION:</strong> Provide Truth Conditions for the observed utterances.
           <br/>
-          <em>Formal Structure:</em> 
+          <em>T-Schema:</em> 
           <span className="text-emerald-400 block mt-1">
-             's' is True ↔ p
+             'Utterance' is true ↔ Condition
           </span>
         </div>
 
-        {scenario.vocabulary.map((word) => (
-          <div key={word} className="group">
+        {uniqueUtterances.length === 0 && (
+           <div className="text-slate-600 font-mono text-sm text-center italic mt-10">
+             Observe the alien to begin constructing your theory...
+           </div>
+        )}
+
+        {uniqueUtterances.map((utterance) => (
+          <div key={utterance} className="group animate-in fade-in slide-in-from-left-2 duration-300">
             <label className="block text-xs text-slate-500 font-mono mb-1 ml-1">
-              Truth Conditions for "{word}":
+              T-Sentence for:
             </label>
             <div className="flex flex-col bg-slate-950 rounded border border-slate-700 focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-500 transition-all">
-              <div className="bg-slate-900 px-3 py-2 border-b border-slate-800 flex items-center gap-2">
-                <span className="text-amber-400 font-mono font-bold">"{word}"</span>
-                <span className="text-slate-500 font-serif italic text-sm">is true if and only if...</span>
+              <div className="bg-slate-900 px-3 py-2 border-b border-slate-800 flex items-center gap-2 overflow-x-auto">
+                <span className="text-amber-400 font-mono font-bold whitespace-nowrap">'{utterance}'</span>
+                <span className="text-emerald-500 font-mono font-bold whitespace-nowrap">is true ↔</span>
               </div>
               <textarea
-                value={theory[word] || ''}
-                onChange={(e) => onUpdateTheory(word, e.target.value)}
-                placeholder={`(describe the conditions, e.g. "a rabbit is present")`}
+                value={theory[utterance] || ''}
+                onChange={(e) => onUpdateTheory(utterance, e.target.value)}
+                placeholder={`... (e.g. "there is a red stone")`}
                 className="w-full bg-transparent text-emerald-100 p-3 font-mono text-sm resize-none h-20 focus:outline-none"
                 disabled={disabled}
               />

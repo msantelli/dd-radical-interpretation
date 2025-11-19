@@ -29,6 +29,7 @@ export interface GameScenario {
   solutionKeywords?: {
     [word: string]: string[]; // List of acceptable keywords for each word (lowercase)
   };
+  takeaways?: string[]; // Educational bullet points displayed at the end
 }
 
 export interface PlayerTheory {
