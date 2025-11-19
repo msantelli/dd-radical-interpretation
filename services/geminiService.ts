@@ -3,21 +3,21 @@ import { GameScenario, EvaluationResult, PlayerTheory } from "../types";
 import { STATIC_SCENARIOS } from "../data/staticScenarios";
 
 // Initialize Gemini Client
-// We only initialize this if we actually plan to use it, but for this refactor
-// we will default to static scenarios to ensure zero cost operation.
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Note: API_KEY is required only if you want infinite AI generated scenarios.
+// The app works in "Zero Cost" mode without it.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || 'dummy_key' });
 
 const MODEL_NAME = "gemini-2.5-flash";
 
 export const generateGameScenario = async (useAI: boolean = false): Promise<GameScenario> => {
-  if (!useAI) {
-    // Simulate network delay for realism
+  // If we want zero cost or if no API key is actually present, use static.
+  if (!useAI || !process.env.API_KEY) {
+    // Simulate network delay for realism and to allow the "Loading" spinner to show briefly
     await new Promise(resolve => setTimeout(resolve, 800));
     const randomIndex = Math.floor(Math.random() * STATIC_SCENARIOS.length);
     return STATIC_SCENARIOS[randomIndex];
   }
 
-  // ... (Existing AI code preserved below for "Infinite Mode" if desired)
   const scenarioSchema: Schema = {
     type: Type.OBJECT,
     properties: {
@@ -69,7 +69,7 @@ export const generateGameScenario = async (useAI: boolean = false): Promise<Game
     }
     throw new Error("Empty response from AI");
   } catch (error) {
-    console.error("Fallback to static due to error:", error);
+    console.warn("AI Generation failed or API Key missing, falling back to static scenario.", error);
     return STATIC_SCENARIOS[0];
   }
 };
@@ -82,7 +82,7 @@ export const evaluatePlayerTheory = async (
   // 1. LOCAL EVALUATION (Zero Cost)
   // If the scenario has solution keywords, we evaluate locally.
   if (scenario.solutionKeywords) {
-    await new Promise(resolve => setTimeout(resolve, 1500)); // Fake thinking time
+    await new Promise(resolve => setTimeout(resolve, 1500)); // Fake thinking time for UX
     
     let correctCount = 0;
     const totalWords = scenario.vocabulary.length;
@@ -92,34 +92,58 @@ export const evaluatePlayerTheory = async (
       const userDef = theory[word]?.toLowerCase() || "";
       const keywords = scenario.solutionKeywords[word] || [];
       
-      const isMatch = keywords.some(k => userDef.includes(k));
+      // Flexible matching: Check if any keyword appears in user definition
+      const isMatch = keywords.some(k => userDef.includes(k.toLowerCase()));
+      
       if (isMatch) {
         correctCount++;
-        feedbackLines.push(`✅ "${word}": Your definition covers the core concept.`);
+        feedbackLines.push(`✅ "${word}": Your T-Sentence corresponds to observed reality.`);
       } else {
-        feedbackLines.push(`❌ "${word}": Does not match observed truth conditions (e.g., compare Obs #${scenario.observations.find(o => o.utterance === word)?.id}).`);
+        // Find an observation where this word was used to give a hint
+        const relevantObs = scenario.observations.find(o => o.utterance === word);
+        feedbackLines.push(`❌ "${word}": definition does not satisfy Truth Conditions (see Log #${relevantObs?.id || '?'}).`);
       }
     }
 
     const score = Math.round((correctCount / totalWords) * 100);
     const isCoherent = score >= 60;
 
+    // Philosophical flavor text based on score
+    let profFeedback = "";
+    if (score === 100) profFeedback = "Your interpretation maximizes the rationality of the speaker. Excellent application of the Principle of Charity.";
+    else if (score >= 60) profFeedback = "Your theory is largely coherent, though some truth conditions remain obscure.";
+    else profFeedback = "Your interpretation attributes too many false beliefs to the speaker. Revisit the Principle of Charity.";
+
     return {
       isCoherent,
       score,
-      feedback: feedbackLines.join("\n"),
-      alternativeTheory: "Indeterminacy Note: Even if your definitions fit, a 'Rabbit-Part' theory might also fit logically!"
+      feedback: profFeedback + "\n\n" + feedbackLines.join("\n"),
+      alternativeTheory: "Indeterminacy Note: Even if your definitions fit, a 'Rabbit-Part' theory might also fit logically! We can never be 100% certain of reference."
     };
   }
 
-  // 2. AI EVALUATION (If no local keywords exist)
+  // 2. AI EVALUATION (Fallback / Infinite Mode)
+  // Only runs if we generated a dynamic scenario without keywords
+  if (!process.env.API_KEY) {
+      return {
+          isCoherent: false,
+          score: 0,
+          feedback: "Error: No API Key found for evaluation, and no local solution exists for this scenario.",
+          alternativeTheory: "Please check configuration."
+      }
+  }
+
   const prompt = `
-    Act as a Logic Professor evaluating a T-Theory.
-    Observations: ${JSON.stringify(scenario.observations)}.
-    Student Definitions: ${JSON.stringify(theory)}
+    Act as a strict Logic Professor evaluating a student's 'Truth Theory' (T-Theory) for an alien language.
     
-    Evaluate if definitions make utterances TRUE in context.
-    Return JSON with isCoherent (bool), score (0-100), feedback (string), alternativeTheory (string).
+    Observations (Data): ${JSON.stringify(scenario.observations)}.
+    Student's T-Sentences: ${JSON.stringify(theory)}
+    
+    CRITERIA:
+    1. Principle of Charity: Do the definitions make the alien's statements TRUE in the observed contexts?
+    2. Coherence: Is the theory consistent?
+    
+    Return JSON.
   `;
 
   const schema: Schema = {

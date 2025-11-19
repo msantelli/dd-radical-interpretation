@@ -7,10 +7,10 @@ export const STATIC_SCENARIOS: GameScenario[] = [
     vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto", "Lumu"],
     solutionKeywords: {
       "Gavagai": ["rabbit", "bunny", "hare", "animal", "rodent"],
-      "Klaatu": ["run", "move", "go", "fast", "sprint"],
-      "Barada": ["storm", "rain", "thunder", "sky", "bad weather"],
-      "Nikto": ["danger", "scary", "fear", "threat", "predator"],
-      "Lumu": ["eat", "food", "consume", "hungry", "meal"]
+      "Klaatu": ["run", "move", "go", "fast", "sprint", "motion"],
+      "Barada": ["storm", "rain", "thunder", "sky", "weather", "cloud"],
+      "Nikto": ["danger", "scary", "fear", "threat", "predator", "wolf"],
+      "Lumu": ["eat", "food", "consume", "hungry", "meal", "feeding"]
     },
     observations: [
       { 

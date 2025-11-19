@@ -27,7 +27,7 @@ export interface GameScenario {
   vocabulary: string[]; // List of all possible alien words
   // Added for offline/free evaluation
   solutionKeywords?: {
-    [word: string]: string[]; // List of acceptable keywords for each word
+    [word: string]: string[]; // List of acceptable keywords for each word (lowercase)
   };
 }
 
