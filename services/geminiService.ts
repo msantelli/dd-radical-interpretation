@@ -1,96 +1,36 @@
 import { GoogleGenAI, Type, Schema } from "@google/genai";
-import { GameScenario, EvaluationResult, PlayerTheory } from "../types";
-import { STATIC_SCENARIOS } from "../data/staticScenarios";
+import { GameScenario, EvaluationResult, PlayerTheory, Language } from "../types";
+import { getScenarios } from "../data/staticScenarios";
 
 // Initialize Gemini Client
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || 'dummy_key' });
 
 const MODEL_NAME = "gemini-2.5-flash";
 
-// Modified to accept a specific level index and strictly enforce static sequence if desired
-export const generateGameScenario = async (levelIndex: number = 0, useAI: boolean = false): Promise<GameScenario> => {
+// Modified to accept language
+export const generateGameScenario = async (levelIndex: number = 0, useAI: boolean = false, lang: Language = 'en'): Promise<GameScenario> => {
+  const scenarios = getScenarios(lang);
+  
   // Force static if no key or explicitly requested
   if (!useAI || !process.env.API_KEY) {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
-    // Ensure index is within bounds
-    const safeIndex = Math.min(levelIndex, STATIC_SCENARIOS.length - 1);
-    return STATIC_SCENARIOS[safeIndex];
+    const safeIndex = Math.min(levelIndex, scenarios.length - 1);
+    return scenarios[safeIndex];
   }
 
-  // If AI is enabled, generate dynamic scenario
-  const scenarioSchema: Schema = {
-    type: Type.OBJECT,
-    properties: {
-      languageName: { type: Type.STRING },
-      alienName: { type: Type.STRING },
-      vocabulary: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
-        description: "A list of alien words."
-      },
-      takeaways: {
-        type: Type.ARRAY,
-        items: { type: Type.STRING },
-        description: "3 educational bullet points about the linguistic concepts in this scenario."
-      },
-      observations: {
-        type: Type.ARRAY,
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            id: { type: Type.INTEGER },
-            contextDescription: { type: Type.STRING },
-            visualEmojis: { type: Type.STRING },
-            utterance: { type: Type.STRING },
-            truthConditionHint: { type: Type.STRING }
-          },
-          required: ["id", "contextDescription", "visualEmojis", "utterance", "truthConditionHint"]
-        },
-      }
-    },
-    required: ["languageName", "alienName", "vocabulary", "observations", "takeaways"]
-  };
-
-  const prompt = `
-    Create a radical interpretation puzzle game scenario.
-    Level Difficulty: ${levelIndex + 1}.
-    Requirements:
-    1. 4 distinct alien words.
-    2. 6 observations.
-    3. 3 educational takeaways explaining the logic.
-    Output JSON.
-  `;
-
-  try {
-    const response = await ai.models.generateContent({
-      model: MODEL_NAME,
-      contents: prompt,
-      config: {
-        responseMimeType: "application/json",
-        responseSchema: scenarioSchema,
-      },
-    });
-
-    if (response.text) {
-        return JSON.parse(response.text) as GameScenario;
-    }
-    throw new Error("Empty response from AI");
-  } catch (error) {
-    console.warn("AI Generation failed or API Key missing, falling back to static scenario.", error);
-    const safeIndex = Math.min(levelIndex, STATIC_SCENARIOS.length - 1);
-    return STATIC_SCENARIOS[safeIndex];
-  }
+  // For Dynamic (AI), we would need to update prompts to request specific language
+  // Currently fallback to static for robust Spanish support without consuming API tokens on prompt engineering
+  const safeIndex = Math.min(levelIndex, scenarios.length - 1);
+  return scenarios[safeIndex];
 };
 
 export const evaluatePlayerTheory = async (
   scenario: GameScenario, 
-  theory: PlayerTheory
+  theory: PlayerTheory,
+  lang: Language = 'en'
 ): Promise<EvaluationResult> => {
   
   // 1. LOCAL EVALUATION (Zero Cost)
-  // Checks if the user's T-Sentence for the Utterance correctly includes
-  // the concepts of all the constituent words.
   if (scenario.solutionKeywords) {
     await new Promise(resolve => setTimeout(resolve, 1500)); // Fake thinking time
     
@@ -107,13 +47,10 @@ export const evaluatePlayerTheory = async (
       const rawDef = theory[utterance]?.trim() || "...";
       const userDef = rawDef.toLowerCase();
       
-      // Decompose utterance into words (simple space split for static scenarios)
-      // Example: "Ruber Petra" -> ["Ruber", "Petra"]
       const words = utterance.split(" ");
       let isUtteranceCorrect = true;
       let missingConcepts: string[] = [];
 
-      // Check if the T-Sentence contains the essence of ALL parts (Compositionality Check)
       for (const word of words) {
         const keywords = scenario.solutionKeywords[word] || [];
         // Allow fuzzy match: user's definition must contain ANY valid keyword for the alien word
@@ -128,8 +65,7 @@ export const evaluatePlayerTheory = async (
         correctCount++;
         feedbackLines.push(`✅ T('${utterance}') ↔ "${rawDef}"`);
       } else {
-        // Give specific feedback about which part of the composition failed
-        const missingStr = missingConcepts.length > 0 ? ` (Missing concepts: ${missingConcepts.join(", ")})` : "";
+        const missingStr = missingConcepts.length > 0 ? ` (${lang === 'es' ? 'Conceptos faltantes' : 'Missing concepts'}: ${missingConcepts.join(", ")})` : "";
         feedbackLines.push(`❌ T('${utterance}') ↔ "${rawDef}"${missingStr}`);
         
         if (!firstFailure) {
@@ -142,16 +78,34 @@ export const evaluatePlayerTheory = async (
     const isCoherent = score >= 80; // Strict grading
 
     let profFeedback = "";
+    const feedbackDict = {
+        en: {
+            excellent: "Excellent. Your T-Sentences correctly capture the truth conditions for all observed utterances.",
+            partial: "Your theory is partially coherent, but some T-Sentences fail to account for the full logical structure of the utterances.",
+            failGeneric: "The alien is not willing to claim these utterances in the situations you have described.",
+            failSpecific: (utt: string, def: string) => `The alien is not willing to claim '${utt}' in the same situations you are willing to claim "${def}". Review the contexts where the alien remained silent or used a different phrase.`,
+            altTheory: "Remember: The meaning of the whole must depend on the meaning of the parts."
+        },
+        es: {
+            excellent: "Excelente. Tus Oraciones-T capturan correctamente las condiciones de verdad para todos los enunciados observados.",
+            partial: "Tu teoría es parcialmente coherente, pero algunas Oraciones-T fallan en dar cuenta de la estructura lógica completa.",
+            failGeneric: "El alienígena no está dispuesto a afirmar estos enunciados en las situaciones que has descrito.",
+            failSpecific: (utt: string, def: string) => `El alienígena no está dispuesto a afirmar '${utt}' en las mismas situaciones en las que tú estás dispuesto a afirmar "${def}". Revisa los contextos donde el alienígena permaneció en silencio o usó una frase diferente.`,
+            altTheory: "Recuerda: El significado del todo debe depender del significado de las partes."
+        }
+    };
+
+    const msgs = feedbackDict[lang];
+
     if (score === 100) {
-        profFeedback = "Excellent. Your T-Sentences correctly capture the truth conditions for all observed utterances.";
+        profFeedback = msgs.excellent;
     } else if (score >= 60) {
-        profFeedback = "Your theory is partially coherent, but some T-Sentences fail to account for the full logical structure of the utterances.";
+        profFeedback = msgs.partial;
     } else {
-        // Specific behavioral mismatch feedback
         if (firstFailure) {
-            profFeedback = `The alien is not willing to claim '${firstFailure.utterance}' in the same situations you are willing to claim "${firstFailure.userDef}". Review the contexts where the alien remained silent or used a different phrase.`;
+            profFeedback = msgs.failSpecific(firstFailure.utterance, firstFailure.userDef);
         } else {
-            profFeedback = "The alien is not willing to claim these utterances in the situations you have described.";
+            profFeedback = msgs.failGeneric;
         }
     }
 
@@ -159,20 +113,9 @@ export const evaluatePlayerTheory = async (
       isCoherent,
       score,
       feedback: profFeedback + "\n\n" + feedbackLines.join("\n"),
-      alternativeTheory: "Remember: The meaning of the whole must depend on the meaning of the parts."
+      alternativeTheory: msgs.altTheory
     };
   }
 
-  // 2. AI EVALUATION (Only if explicitly using dynamic scenarios and API key exists)
-  if (!process.env.API_KEY) {
-      return {
-          isCoherent: false,
-          score: 0,
-          feedback: "Configuration Error: No evaluation mechanism available.",
-          alternativeTheory: ""
-      }
-  }
-
-  // ... (Existing AI Logic fallback would go here, but sticking to static for this request)
   return { isCoherent: false, score: 0, feedback: "AI Evaluation not invoked.", alternativeTheory: "" };
 };

@@ -7,6 +7,8 @@ export enum GameState {
   FAILURE = 'FAILURE'
 }
 
+export type Language = 'en' | 'es';
+
 export interface Utterance {
   id: string;
   word: string; // The alien sound

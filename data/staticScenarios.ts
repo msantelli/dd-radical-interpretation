@@ -1,17 +1,16 @@
 import { GameScenario } from "../types";
 
-export const STATIC_SCENARIOS: GameScenario[] = [
+const STATIC_SCENARIOS_EN: GameScenario[] = [
   // LEVEL 1: Reference (Basic Predicates)
-  // Focus: Direct correlation between object and word.
   {
     languageName: "Arborean",
     alienName: "Subject Quine",
     vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto"],
     solutionKeywords: {
-      "Gavagai": ["rabbit", "hare", "bunny", "animal"],
-      "Klaatu": ["run", "move", "fast", "go"],
-      "Barada": ["storm", "rain", "thunder", "weather"],
-      "Nikto": ["wolf", "predator", "danger", "enemy"]
+      "Gavagai": ["rabbit", "hare", "bunny", "animal", "critter", "mammal", "coney", "lapin"],
+      "Klaatu": ["run", "move", "fast", "go", "flee", "sprint", "dash", "motion", "moving", "escape"],
+      "Barada": ["storm", "rain", "thunder", "weather", "wet", "pour", "lightning", "cloud", "tempest"],
+      "Nikto": ["wolf", "predator", "danger", "enemy", "threat", "beast", "canine", "hunter"]
     },
     takeaways: [
       "Truth is the Primitive: We do not start with reference (word-to-object links). We start by holding the alien's *sentences* true in the observed circumstances.",
@@ -63,19 +62,16 @@ export const STATIC_SCENARIOS: GameScenario[] = [
       }
     ]
   },
-
-  // LEVEL 2: Compositionality (Conjunctions)
-  // Focus: Adjective + Noun combinations.
-  // "Ruz Gorm" is true iff x is Red AND x is a Stone.
+  // LEVEL 2: Compositionality
   {
     languageName: "Basaltic",
     alienName: "Subject Tarski",
     vocabulary: ["Gorm", "Vell", "Ruz", "Zul"],
     solutionKeywords: {
-      "Gorm": ["stone", "rock", "boulder", "mineral"],
-      "Vell": ["sky", "air", "cloud", "up", "atmosphere"],
-      "Ruz": ["red", "crimson", "scarlet"],
-      "Zul": ["blue", "azure", "cyan", "teal"]
+      "Gorm": ["stone", "rock", "boulder", "mineral", "pebble", "granite", "concrete", "solid object"],
+      "Vell": ["sky", "air", "cloud", "up", "atmosphere", "heaven", "blue yonder", "above"],
+      "Ruz": ["red", "crimson", "scarlet", "ruby", "cherry", "maroon", "rose", "reddish"],
+      "Zul": ["blue", "azure", "cyan", "teal", "sapphire", "cobalt", "indigo", "bluish"]
     },
     takeaways: [
       "Compositionality: The meaning of 'Ruz Gorm' depends on the meaning of 'Ruz' plus 'Gorm'.",
@@ -127,17 +123,15 @@ export const STATIC_SCENARIOS: GameScenario[] = [
       }
     ]
   },
-
-  // LEVEL 3: Negation (Logical Operators)
-  // Focus: Presence vs Absence. "Xo" functions as logical NOT.
+  // LEVEL 3: Negation
   {
     languageName: "Umbral",
     alienName: "Subject Boole",
     vocabulary: ["Zan", "Korn", "Xo"],
     solutionKeywords: {
-      "Zan": ["light", "day", "sun", "bright", "shining"],
-      "Korn": ["fire", "flame", "burn", "heat"],
-      "Xo": ["not", "no", "non", "negation", "false", "absence", "without", "gone", "void"]
+      "Zan": ["light", "day", "sun", "bright", "shining", "glow", "radiance", "lit", "illumination", "daytime"],
+      "Korn": ["fire", "flame", "burn", "heat", "blaze", "inferno", "spark", "combustion", "hot"],
+      "Xo": ["not", "no", "non", "negation", "false", "absence", "without", "gone", "void", "lacking", "missing", "n't", "zero"]
     },
     takeaways: [
       "Truth Functions: 'Xo' is a logical operator. It flips the truth value of the sentence.",
@@ -189,18 +183,16 @@ export const STATIC_SCENARIOS: GameScenario[] = [
       }
     ]
   },
-
-  // LEVEL 4: Quantification (Singular vs Universal)
-  // Focus: "Sim" (Exists x) vs "Maka" (For All x).
+  // LEVEL 4: Quantification
   {
     languageName: "Gestalt",
     alienName: "Subject Cantor",
     vocabulary: ["Hek", "Rond", "Sim", "Maka"],
     solutionKeywords: {
-      "Hek": ["cube", "box", "square", "block", "voxel"],
-      "Rond": ["sphere", "ball", "round", "orb", "circle"],
-      "Sim": ["one", "single", "a ", "an ", "exists", "some", "singular", "individual"],
-      "Maka": ["all", "every", "many", "group", "multiple", "universal", "everything"]
+      "Hek": ["cube", "box", "square", "block", "voxel", "brick", "die", "dice", "hexahedron"],
+      "Rond": ["sphere", "ball", "round", "orb", "circle", "globe", "marble", "pellet", "circular object", "spheroid"],
+      "Sim": ["one", "single", "a ", "an ", "exists", "some", "singular", "individual", "unit", "lone", "solo", "unique"],
+      "Maka": ["all", "every", "many", "group", "multiple", "universal", "everything", "plenty", "lot", "collective", "entire", "whole"]
     },
     takeaways: [
       "Quantification: We moved from talking about specific objects to talking about sets of objects.",
@@ -253,3 +245,258 @@ export const STATIC_SCENARIOS: GameScenario[] = [
     ]
   }
 ];
+
+const STATIC_SCENARIOS_ES: GameScenario[] = [
+    // LEVEL 1: Reference
+    {
+      languageName: "Arbóreo",
+      alienName: "Sujeto Quine",
+      vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto"],
+      solutionKeywords: {
+        "Gavagai": ["conejo", "liebre", "conejito", "animal", "mamífero", "bicho", "roedor", "conejos"],
+        "Klaatu": ["correr", "corre", "mover", "rápido", "ir", "huye", "escapa", "movimiento", "veloz", "marcha", "carrera"],
+        "Barada": ["tormenta", "lluvia", "trueno", "clima", "llueve", "llover", "tempestad", "rayo", "agua", "nublado", "aguacero"],
+        "Nikto": ["lobo", "depredador", "peligro", "enemigo", "bestia", "canino", "perro", "amenaza", "cazador"]
+      },
+      takeaways: [
+        "La Verdad es lo Primitivo: No empezamos con la referencia (vínculos palabra-objeto). Empezamos asumiendo que las *oraciones* del alienígena son verdaderas en las circunstancias observadas.",
+        "La Referencia es Teórica: No podemos ver la 'referencia'. Mapear 'Gavagai' a conejos es solo un movimiento teórico para explicar por qué la oración es verdadera.",
+        "Indeterminación: ¿'Gavagai' significa 'Conejo' o 'Parte no separada de conejo'? Mientras las oraciones-T sean verdaderas, la referencia específica permanece inescrutable."
+      ],
+      observations: [
+        { 
+          id: 1, 
+          contextDescription: "Un conejo blanco corre rápidamente por la hierba alta.", 
+          visualEmojis: "🐇🌿💨", 
+          utterance: "Gavagai", 
+          truthConditionHint: "Hay un conejo." 
+        },
+        { 
+          id: 2, 
+          contextDescription: "El conejo se sienta perfectamente quieto, moviendo su nariz.", 
+          visualEmojis: "🐇🛑", 
+          utterance: "Gavagai", 
+          truthConditionHint: "Hay un conejo (sentado)." 
+        },
+        { 
+          id: 3, 
+          contextDescription: "Un lobo aparece en la cresta. El alienígena señala frenéticamente.", 
+          visualEmojis: "🐺😱", 
+          utterance: "Nikto", 
+          truthConditionHint: "Hay un lobo." 
+        },
+        { 
+          id: 4, 
+          contextDescription: "El conejo ve al lobo y huye.", 
+          visualEmojis: "🐇💨🐺", 
+          utterance: "Klaatu", 
+          truthConditionHint: "Algo está corriendo." 
+        },
+        { 
+          id: 5, 
+          contextDescription: "Nubes oscuras se juntan, truenos retumban y cae lluvia.", 
+          visualEmojis: "☁️⚡🌧️", 
+          utterance: "Barada", 
+          truthConditionHint: "Hay tormenta." 
+        },
+        { 
+          id: 6, 
+          contextDescription: "El lobo huye de la lluvia.", 
+          visualEmojis: "🐺💨🌧️", 
+          utterance: "Klaatu", 
+          truthConditionHint: "Eso (el lobo) está corriendo." 
+        }
+      ]
+    },
+  
+    // LEVEL 2: Compositionality
+    {
+      languageName: "Basáltico",
+      alienName: "Sujeto Tarski",
+      vocabulary: ["Gorm", "Vell", "Ruz", "Zul"],
+      solutionKeywords: {
+        "Gorm": ["piedra", "roca", "mineral", "guijarro", "piedras", "rocas", "pedrusco"],
+        "Vell": ["cielo", "aire", "nube", "arriba", "atmósfera", "celeste", "firmamento", "espacio"],
+        "Ruz": ["rojo", "carmesí", "escarlata", "rubí", "colorado", "rojizo", "sangre"],
+        "Zul": ["azul", "celeste", "cian", "azulado", "zafiro", "marino", "turquesa"]
+      },
+      takeaways: [
+        "Composicionalidad: El significado de 'Ruz Gorm' depende del significado de 'Ruz' más 'Gorm'.",
+        "Axiomas Finitos, Oraciones Infinitas: Una vez que conoces las partes, puedes entender nuevas combinaciones como 'Zul Gorm' aunque nunca hayas visto una piedra azul antes.",
+        "Satisfacción: El predicado 'Ruz' es satisfecho por todas las cosas rojas."
+      ],
+      observations: [
+        {
+          id: 1,
+          contextDescription: "El alienígena recoge una piedra gris áspera.",
+          visualEmojis: "🪨👽",
+          utterance: "Gorm",
+          truthConditionHint: "Eso es una piedra."
+        },
+        {
+          id: 2,
+          contextDescription: "El alienígena señala una piedra roja brillante en el suelo.",
+          visualEmojis: "🔴🪨",
+          utterance: "Ruz Gorm",
+          truthConditionHint: "Eso es una piedra roja."
+        },
+        {
+          id: 3,
+          contextDescription: "El alienígena señala al cielo azul claro.",
+          visualEmojis: "🟦☀️",
+          utterance: "Zul Vell",
+          truthConditionHint: "Eso es un cielo azul."
+        },
+        {
+          id: 4,
+          contextDescription: "El sol se pone, volviendo el cielo de un rojo profundo.",
+          visualEmojis: "🟥☀️",
+          utterance: "Ruz Vell",
+          truthConditionHint: "Eso es un cielo rojo."
+        },
+        {
+          id: 5,
+          contextDescription: "El alienígena encuentra una gema azul rara incrustada en una roca.",
+          visualEmojis: "💎🟦",
+          utterance: "Zul Gorm",
+          truthConditionHint: "Eso es una piedra azul."
+        },
+        {
+          id: 6,
+          contextDescription: "El alienígena sostiene una flor roja (distinta de piedra/cielo).",
+          visualEmojis: "🌹",
+          utterance: "Ruz",
+          truthConditionHint: "Eso es rojo."
+        }
+      ]
+    },
+  
+    // LEVEL 3: Negation
+    {
+      languageName: "Umbrío",
+      alienName: "Sujeto Boole",
+      vocabulary: ["Zan", "Korn", "Xo"],
+      solutionKeywords: {
+        "Zan": ["luz", "día", "sol", "brillante", "brilla", "iluminado", "claridad", "resplandor", "luminoso"],
+        "Korn": ["fuego", "llama", "quemar", "calor", "ardor", "incendio", "fogata", "caliente", "lumbre"],
+        "Xo": ["no", "negación", "falso", "ausencia", "sin", "nada", "tampoco", "falta", "carencia", "vacío"]
+      },
+      takeaways: [
+        "Funciones de Verdad: 'Xo' es un operador lógico. Invierte el valor de verdad de la oración.",
+        "Objetos Abstractos: A diferencia de 'Conejo', no puedes señalar 'No'. Solo lo ves por la ausencia del objeto esperado.",
+        "Recursión: Los operadores lógicos nos permiten construir oraciones complejas a partir de simples."
+      ],
+      observations: [
+        {
+          id: 1,
+          contextDescription: "El sol brilla intensamente sobre la cabeza.",
+          visualEmojis: "☀️😎",
+          utterance: "Zan",
+          truthConditionHint: "Hay luz."
+        },
+        {
+          id: 2,
+          contextDescription: "Cae la noche. Está completamente oscuro.",
+          visualEmojis: "🌑👀",
+          utterance: "Xo Zan",
+          truthConditionHint: "No hay luz."
+        },
+        {
+          id: 3,
+          contextDescription: "El alienígena enciende una fogata.",
+          visualEmojis: "🔥🪵",
+          utterance: "Korn",
+          truthConditionHint: "Hay fuego."
+        },
+        {
+          id: 4,
+          contextDescription: "El alienígena vierte agua sobre el fuego. Se apaga, dejando ceniza húmeda.",
+          visualEmojis: "💧💨",
+          utterance: "Xo Korn",
+          truthConditionHint: "No hay fuego."
+        },
+        {
+          id: 5,
+          contextDescription: "El alienígena sostiene una antorcha en una cueva oscura.",
+          visualEmojis: "🔦🦇",
+          utterance: "Korn",
+          truthConditionHint: "Hay fuego (incluso aquí)."
+        },
+        {
+          id: 6,
+          contextDescription: "El alienígena señala la boca oscura de la cueva (sin fuego, sin sol).",
+          visualEmojis: "🕳️",
+          utterance: "Xo Zan",
+          truthConditionHint: "No hay luz."
+        }
+      ]
+    },
+  
+    // LEVEL 4: Quantification
+    {
+      languageName: "Gestalt",
+      alienName: "Sujeto Cantor",
+      vocabulary: ["Hek", "Rond", "Sim", "Maka"],
+      solutionKeywords: {
+        "Hek": ["cubo", "caja", "cuadrado", "bloque", "ladrillo", "dado", "cuadrangular"],
+        "Rond": ["esfera", "bola", "redondo", "orbe", "círculo", "pelota", "balón", "globular", "circular", "circulo", "globo"],
+        "Sim": ["uno", "un", "una", "existe", "singular", "individuo", "único", "solitario", "solo"],
+        "Maka": ["todo", "todos", "muchos", "grupo", "múltiple", "universal", "montón", "varios", "totalidad", "entero", "multitud"]
+      },
+      takeaways: [
+        "Cuantificación: Pasamos de hablar de objetos específicos a hablar de conjuntos de objetos.",
+        "Compromiso Ontológico (Trivia: Postura de Quine): Decir 'Sim Hek' (Hay un cubo) te compromete a la existencia de cubos. Davidson, sin embargo, se enfoca en las oraciones-T.",
+        "Forma Lógica: La gramática superficial puede ser simple, pero la forma lógica involucra variables que recorren un dominio."
+      ],
+      observations: [
+        {
+          id: 1,
+          contextDescription: "Un solo cubo está sobre la mesa.",
+          visualEmojis: "🟦",
+          utterance: "Sim Hek",
+          truthConditionHint: "Hay un cubo."
+        },
+        {
+          id: 2,
+          contextDescription: "Una sola esfera rueda por el suelo.",
+          visualEmojis: "⚽",
+          utterance: "Sim Rond",
+          truthConditionHint: "Hay una esfera."
+        },
+        {
+          id: 3,
+          contextDescription: "Una bandeja está llena de veinte cubos.",
+          visualEmojis: "🟦🟦🟦",
+          utterance: "Maka Hek",
+          truthConditionHint: "Hay muchos/todos los cubos."
+        },
+        {
+          id: 4,
+          contextDescription: "Un foso está lleno de cientos de esferas.",
+          visualEmojis: "⚽⚽⚽",
+          utterance: "Maka Rond",
+          truthConditionHint: "Hay muchas/todas las esferas."
+        },
+        {
+          id: 5,
+          contextDescription: "El alienígena sostiene un cubo, mientras señala la bandeja de muchos cubos.",
+          visualEmojis: "🟦👉🟦🟦",
+          utterance: "Sim Hek",
+          truthConditionHint: "Hay un cubo (Singular)."
+        },
+        {
+          id: 6,
+          contextDescription: "El alienígena barre con su brazo toda la habitación de formas.",
+          visualEmojis: "🙌📦",
+          utterance: "Maka",
+          truthConditionHint: "Todo/Todos."
+        }
+      ]
+    }
+  ];
+
+export const getScenarios = (lang: 'en' | 'es'): GameScenario[] => {
+    return lang === 'es' ? STATIC_SCENARIOS_ES : STATIC_SCENARIOS_EN;
+}
+
+export const STATIC_SCENARIOS = STATIC_SCENARIOS_EN;

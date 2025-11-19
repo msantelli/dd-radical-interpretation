@@ -1,32 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import { GameState, GameScenario, PlayerTheory, EvaluationResult } from './types';
+import React, { useState, useMemo } from 'react';
+import { GameState, GameScenario, PlayerTheory, EvaluationResult, Language } from './types';
 import { generateGameScenario, evaluatePlayerTheory } from './services/geminiService';
 import { FieldNotes } from './components/FieldNotes';
 import { PhilosopherGuide } from './components/PhilosopherGuide';
-import { STATIC_SCENARIOS } from './data/staticScenarios';
+import { getScenarios } from './data/staticScenarios';
 import { Icons } from './constants';
+import { TRANSLATIONS } from './data/translations';
 
 const App: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>(GameState.INTRO);
+  const [appLanguage, setAppLanguage] = useState<Language | null>(null);
   const [scenario, setScenario] = useState<GameScenario | null>(null);
   const [currentObsIndex, setCurrentObsIndex] = useState(0);
   const [theory, setTheory] = useState<PlayerTheory>({});
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [showGuide, setShowGuide] = useState(false);
   const [currentLevel, setCurrentLevel] = useState(0);
+
+  // Randomize the order of the language questions once on mount
+  const languageOrder = useMemo(() => Math.random() > 0.5 ? 'en-first' : 'es-first', []);
   
-  // History of observations the player has seen so far
+  // Derived state
+  const t = appLanguage ? TRANSLATIONS[appLanguage] : TRANSLATIONS['en'];
+  const scenarios = appLanguage ? getScenarios(appLanguage) : [];
   const visibleObservations = scenario ? scenario.observations.slice(0, currentObsIndex + 1) : [];
   const isLastObservation = scenario && currentObsIndex === scenario.observations.length - 1;
-  const hasNextLevel = currentLevel < STATIC_SCENARIOS.length - 1;
+  const hasNextLevel = currentLevel < scenarios.length - 1;
 
   const startGame = async (levelIndex: number = 0) => {
+    if (!appLanguage) return;
     setGameState(GameState.LOADING);
     setCurrentLevel(levelIndex);
     try {
-      const newScenario = await generateGameScenario(levelIndex, false);
+      const newScenario = await generateGameScenario(levelIndex, false, appLanguage);
       setScenario(newScenario);
-      // Theory is now based on utterances, so we start empty and let user fill as they appear
       setTheory({});
       setCurrentObsIndex(0);
       setGameState(GameState.PLAYING);
@@ -43,9 +50,9 @@ const App: React.FC = () => {
   };
 
   const handleSubmitTheory = async () => {
-    if (!scenario) return;
+    if (!scenario || !appLanguage) return;
     setGameState(GameState.EVALUATING);
-    const result = await evaluatePlayerTheory(scenario, theory);
+    const result = await evaluatePlayerTheory(scenario, theory, appLanguage);
     setEvaluation(result);
     setGameState(result.isCoherent ? GameState.SUCCESS : GameState.FAILURE);
   };
@@ -67,38 +74,90 @@ const App: React.FC = () => {
     setGameState(GameState.INTRO);
   };
 
+  // Language Selection Screen
+  if (!appLanguage) {
+      return (
+        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+                <div className="absolute top-10 left-10 text-emerald-900 font-mono text-9xl opacity-10">?</div>
+                <div className="absolute bottom-20 right-20 text-emerald-900 font-mono text-9xl opacity-10">¿</div>
+            </div>
+
+            <div className="max-w-5xl w-full bg-slate-900 border border-slate-800 rounded-xl p-10 shadow-2xl z-10 text-center">
+                <div className="flex flex-col md:flex-row justify-center gap-8 items-center mb-10 font-mono text-lg md:text-xl text-slate-300 leading-relaxed">
+                    {languageOrder === 'en-first' ? (
+                        <>
+                            <div className="max-w-md">
+                                "This is a game about interpreting others we don't understand, which language do you understand?"
+                            </div>
+                            <div className="hidden md:block h-20 w-px bg-slate-700"></div>
+                            <div className="max-w-md">
+                                "Este es un juego acerca de interpretar a quienes no entendemos, ¿qué idioma hablás?"
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="max-w-md">
+                                "Este es un juego acerca de interpretar a quienes no entendemos, ¿qué idioma hablás?"
+                            </div>
+                            <div className="hidden md:block h-20 w-px bg-slate-700"></div>
+                            <div className="max-w-md">
+                                "This is a game about interpreting others we don't understand, which language do you understand?"
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                <div className="flex justify-center gap-6">
+                    <button 
+                        onClick={() => setAppLanguage('en')}
+                        className="px-8 py-4 bg-slate-800 hover:bg-slate-700 hover:border-emerald-500 border border-slate-600 rounded-lg text-white font-mono text-xl transition-all shadow-lg hover:shadow-emerald-900/20 w-40"
+                    >
+                        English
+                    </button>
+                    <button 
+                        onClick={() => setAppLanguage('es')}
+                        className="px-8 py-4 bg-slate-800 hover:bg-slate-700 hover:border-emerald-500 border border-slate-600 rounded-lg text-white font-mono text-xl transition-all shadow-lg hover:shadow-emerald-900/20 w-40"
+                    >
+                        Español
+                    </button>
+                </div>
+            </div>
+        </div>
+      );
+  }
+
   // Introduction Screen
   if (gameState === GameState.INTRO) {
     return (
       <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4 relative overflow-hidden">
-        {/* Background Elements */}
         <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
             <div className="absolute top-10 left-10 text-emerald-900 font-mono text-9xl opacity-10">T</div>
             <div className="absolute bottom-20 right-20 text-emerald-900 font-mono text-9xl opacity-10">iff</div>
         </div>
 
-        {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} />}
+        {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} lang={appLanguage} />}
         
         <div className="max-w-4xl w-full bg-slate-900 border border-emerald-500/30 rounded-xl p-8 shadow-2xl shadow-emerald-900/20 z-10">
           <div className="flex flex-col items-center mb-8">
             <div className="p-4 bg-slate-800 rounded-full ring-2 ring-emerald-500/20 text-emerald-400 mb-4">
                 <Icons.Brain />
             </div>
-            <h1 className="text-4xl font-mono font-bold text-center text-emerald-400 tracking-tight">RADICAL INTERPRETER</h1>
+            <h1 className="text-4xl font-mono font-bold text-center text-emerald-400 tracking-tight">{t.title}</h1>
             <p className="text-slate-400 text-lg mt-2 font-light text-center max-w-2xl">
-              Select a mission to begin field work. Assume the alien is rational. Maximize truth.
+              {t.subtitle}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-             {STATIC_SCENARIOS.map((scen, idx) => (
+             {scenarios.map((scen, idx) => (
                <button
                  key={idx}
                  onClick={() => startGame(idx)}
                  className="group relative p-6 rounded-lg border border-slate-700 bg-slate-800/50 hover:bg-slate-800 hover:border-emerald-500/50 transition-all text-left"
                >
                  <div className="absolute top-3 right-3 text-slate-600 group-hover:text-emerald-500/50 font-mono text-xs border border-slate-700 px-2 py-0.5 rounded">
-                    LEVEL {idx + 1}
+                    {t.level} {idx + 1}
                  </div>
                  <h3 className="text-emerald-400 font-mono font-bold text-lg mb-1 group-hover:text-emerald-300">
                     {scen.languageName.toUpperCase()}
@@ -113,12 +172,18 @@ const App: React.FC = () => {
              ))}
           </div>
           
-          <div className="flex justify-center">
+          <div className="flex justify-center gap-4">
+             <button 
+                onClick={() => setAppLanguage(null)}
+                className="px-4 py-2 bg-transparent border border-slate-700 hover:bg-slate-800 text-slate-500 font-mono rounded transition-colors text-xs"
+             >
+                LANG
+             </button>
             <button 
               onClick={() => setShowGuide(true)}
               className="px-6 py-2 bg-transparent border border-slate-700 hover:bg-slate-800 text-slate-400 font-mono rounded transition-colors flex items-center gap-2 text-sm"
             >
-              <Icons.Book /> FIELD MANUAL
+              <Icons.Book /> {t.manual}
             </button>
           </div>
         </div>
@@ -131,7 +196,7 @@ const App: React.FC = () => {
     return (
       <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center">
         <div className="animate-spin text-emerald-500 mb-4"><Icons.Refresh /></div>
-        <p className="text-emerald-500 font-mono animate-pulse">LOADING LEVEL {currentLevel + 1} DATA...</p>
+        <p className="text-emerald-500 font-mono animate-pulse">{t.loading} {currentLevel + 1}...</p>
       </div>
     );
   }
@@ -139,11 +204,11 @@ const App: React.FC = () => {
   // Game & Result Screens
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 flex flex-col md:flex-row overflow-hidden relative">
-      {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} />}
+      {showGuide && <PhilosopherGuide onClose={() => setShowGuide(false)} lang={appLanguage} />}
 
       {/* Top Bar Mobile / Tablet */}
       <div className="md:hidden bg-slate-900 p-3 flex justify-between items-center border-b border-slate-800">
-         <span className="text-emerald-400 font-bold font-mono">RADICAL INTERPRETER</span>
+         <span className="text-emerald-400 font-bold font-mono">{t.title}</span>
          <button onClick={() => setShowGuide(true)} className="p-2 text-slate-400 hover:text-white"><Icons.Book /></button>
       </div>
 
@@ -153,19 +218,19 @@ const App: React.FC = () => {
           <div className="flex flex-col">
              <div className="flex items-center gap-2 text-emerald-400">
                 <Icons.Alien />
-                <span className="font-mono font-bold tracking-widest">{scenario?.alienName || 'SUBJECT'}</span>
+                <span className="font-mono font-bold tracking-widest">{scenario?.alienName || t.subject}</span>
              </div>
-             <span className="text-xs font-mono text-slate-500 ml-8">LEVEL {currentLevel + 1}: {scenario?.languageName.toUpperCase()}</span>
+             <span className="text-xs font-mono text-slate-500 ml-8">{t.level} {currentLevel + 1}: {scenario?.languageName.toUpperCase()}</span>
           </div>
           <div className="flex items-center gap-4">
             <button 
                 onClick={() => setShowGuide(true)}
                 className="hidden md:flex text-xs font-mono text-slate-400 hover:text-emerald-400 items-center gap-1 transition-colors"
             >
-                <Icons.Book /> MANUAL
+                <Icons.Book /> {t.manual}
             </button>
             <div className="text-xs font-mono text-slate-500 bg-slate-800 px-2 py-1 rounded">
-                OBSERVATION {currentObsIndex + 1} / {scenario?.observations.length}
+                {t.observationCount} {currentObsIndex + 1} / {scenario?.observations.length}
             </div>
           </div>
         </header>
@@ -181,7 +246,7 @@ const App: React.FC = () => {
               }`}
             >
               <div className="flex justify-between items-start mb-2">
-                <span className="bg-slate-800 text-slate-400 text-xs font-mono px-2 py-1 rounded">LOG #{obs.id}</span>
+                <span className="bg-slate-800 text-slate-400 text-xs font-mono px-2 py-1 rounded">{t.observationLog} #{obs.id}</span>
                 <span className="text-3xl filter drop-shadow-lg" role="img" aria-label="visual">{obs.visualEmojis}</span>
               </div>
               <p className="text-slate-300 font-light mb-4 italic border-l-2 border-slate-700 pl-3">
@@ -205,7 +270,7 @@ const App: React.FC = () => {
               disabled={gameState !== GameState.PLAYING}
               className="w-full py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-slate-200 font-mono flex items-center justify-center gap-2 transition-colors"
             >
-              NEXT OBSERVATION <Icons.ArrowRight />
+              {t.nextObservation} <Icons.ArrowRight />
             </button>
           ) : (
              gameState === GameState.PLAYING && (
@@ -213,7 +278,7 @@ const App: React.FC = () => {
                 onClick={handleSubmitTheory}
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-mono font-bold rounded transition-colors flex items-center justify-center gap-2 shadow-lg shadow-emerald-900/20"
               >
-                SUBMIT THEORY FOR REVIEW <Icons.Check />
+                {t.submitTheory} <Icons.Check />
               </button>
             )
           )}
@@ -223,7 +288,7 @@ const App: React.FC = () => {
              onClick={handleRestart}
              className="w-full mt-2 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 rounded text-slate-200 font-mono flex items-center justify-center gap-2 transition-colors"
            >
-             BACK TO MISSION SELECT <Icons.Refresh />
+             {t.backToSelect} <Icons.Refresh />
            </button>
           )}
         </div>
@@ -236,8 +301,8 @@ const App: React.FC = () => {
              <div className="h-full flex flex-col items-center justify-center space-y-4">
                 <div className="animate-spin text-emerald-500"><Icons.Refresh /></div>
                 <p className="font-mono text-emerald-400 text-center">
-                  VERIFYING T-SENTENCES...<br/>
-                  <span className="text-xs text-slate-500">Checking correspondence with observed conditions</span>
+                  {t.verifying}<br/>
+                  <span className="text-xs text-slate-500">{t.verifyingSub}</span>
                 </p>
              </div>
            ) : (
@@ -247,6 +312,7 @@ const App: React.FC = () => {
               theory={theory} 
               onUpdateTheory={(word, def) => setTheory(prev => ({...prev, [word]: def}))}
               disabled={gameState !== GameState.PLAYING}
+              lang={appLanguage}
             />
            )
         ) : null}
@@ -261,24 +327,23 @@ const App: React.FC = () => {
               </div>
               <div>
                 <h2 className="text-2xl font-bold font-mono">
-                  {gameState === GameState.SUCCESS ? 'THEORY CONFIRMED' : 'THEORY INCOHERENT'}
+                  {gameState === GameState.SUCCESS ? t.theoryConfirmed : t.theoryIncoherent}
                 </h2>
-                <p className="font-mono text-sm opacity-75 mt-1">COHERENCE SCORE: {evaluation.score}/100</p>
+                <p className="font-mono text-sm opacity-75 mt-1">{t.coherenceScore}: {evaluation.score}/100</p>
               </div>
             </div>
 
             <div className="space-y-6">
               <div className="bg-slate-900/80 p-5 rounded border border-slate-700 shadow-sm">
-                <h3 className="text-slate-400 font-mono text-xs mb-3 uppercase tracking-wider border-b border-slate-800 pb-2">Evaluation Feedback</h3>
+                <h3 className="text-slate-400 font-mono text-xs mb-3 uppercase tracking-wider border-b border-slate-800 pb-2">{t.feedback}</h3>
                 <p className="text-slate-200 leading-relaxed whitespace-pre-line text-sm">{evaluation.feedback}</p>
               </div>
               
-              {/* New Educational Takeaways Section */}
               {scenario?.takeaways && (
                   <div className="bg-emerald-950/30 p-5 rounded border border-emerald-500/20 shadow-sm">
                     <div className="flex items-center gap-2 mb-3 border-b border-emerald-500/20 pb-2">
                         <Icons.Book />
-                        <h3 className="text-emerald-400 font-mono text-xs uppercase tracking-wider">Philosophical Takeaways</h3>
+                        <h3 className="text-emerald-400 font-mono text-xs uppercase tracking-wider">{t.takeaways}</h3>
                     </div>
                     <ul className="space-y-2">
                         {scenario.takeaways.map((point, i) => (
@@ -292,9 +357,9 @@ const App: React.FC = () => {
 
               <div className="bg-slate-900/80 p-5 rounded border border-slate-700 shadow-sm relative overflow-hidden">
                 <div className="absolute top-0 right-0 p-2 opacity-10"><Icons.Brain /></div>
-                <h3 className="text-amber-400 font-mono text-xs mb-3 uppercase tracking-wider border-b border-slate-800 pb-2">Indeterminacy Note</h3>
+                <h3 className="text-amber-400 font-mono text-xs mb-3 uppercase tracking-wider border-b border-slate-800 pb-2">{t.indeterminacy}</h3>
                 <p className="text-slate-300 text-sm italic mb-3 opacity-80">
-                  "There may be no unique theory that fits all the facts..."
+                  {t.indeterminacyQuote}
                 </p>
                 <div className="text-slate-200 border-l-2 border-amber-500 pl-3 text-sm">
                   {evaluation.alternativeTheory}
@@ -307,7 +372,7 @@ const App: React.FC = () => {
                     onClick={handleRetry}
                     className="px-4 py-3 bg-slate-700 hover:bg-slate-600 rounded text-white font-mono text-sm transition-colors w-full border border-slate-600"
                     >
-                    REVISE T-SENTENCES (RETRY)
+                    {t.revise}
                     </button>
                     
                     {hasNextLevel && (
@@ -315,7 +380,7 @@ const App: React.FC = () => {
                         onClick={handleNextLevel}
                         className="px-4 py-3 bg-transparent hover:bg-slate-800 rounded text-slate-400 font-mono text-sm transition-colors w-full border border-slate-700 border-dashed flex items-center justify-center gap-2"
                         >
-                        ABANDON HYPOTHESIS & PROCEED ANYWAY <Icons.ArrowRight />
+                        {t.proceedAnyway} <Icons.ArrowRight />
                         </button>
                     )}
                 </div>
@@ -326,14 +391,14 @@ const App: React.FC = () => {
                   onClick={handleNextLevel}
                   className="px-4 py-4 bg-emerald-600 hover:bg-emerald-500 rounded text-white font-mono font-bold text-lg transition-colors w-full shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2"
                 >
-                  PROCEED TO LEVEL {currentLevel + 2} <Icons.ArrowRight />
+                  {t.proceedNext} {currentLevel + 2} <Icons.ArrowRight />
                 </button>
               )}
 
               {!hasNextLevel && (
                 <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded text-amber-200 font-mono text-center">
-                  🎓 FIELD WORK COMPLETE. <br/>
-                  You have encountered all currently known alien dialects.
+                  🎓 {t.complete} <br/>
+                  {t.completeSub}
                 </div>
               )}
             </div>
