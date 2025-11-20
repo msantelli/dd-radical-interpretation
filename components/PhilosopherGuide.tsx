@@ -37,7 +37,7 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose, lan
                 To understand a sentence is to know the conditions under which it is true. Your goal is to construct <strong>T-Sentences</strong> for every utterance you hear.
                 </p>
                 <div className="bg-slate-950 p-4 rounded border border-slate-800 text-sm font-mono text-center">
-                    <span className="text-emerald-400">"Gavagai"</span> is true <span className="text-slate-500">if and only if</span> <span className="text-amber-400">a rabbit is present</span>.
+                    <span className="text-emerald-400">"Gavagai"</span> is true <span className="text-slate-400 italic">in the Language of the Subject</span> <span className="text-slate-500">if and only if</span> <span className="text-amber-400">a rabbit is present</span>.
                 </div>
                 <p className="mt-4 text-sm text-slate-400">
                 Note: Only full sentences (utterances) have truth conditions. Even if the alien says just "Gorm" or "Hek", treat them as linguistic actions asserting a truth about the world.
@@ -73,7 +73,7 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose, lan
                 Entender una oración es conocer las condiciones bajo las cuales es verdadera. Tu objetivo es construir <strong>Oraciones-T</strong> para cada enunciado que escuches.
                 </p>
                 <div className="bg-slate-950 p-4 rounded border border-slate-800 text-sm font-mono text-center">
-                    <span className="text-emerald-400">"Gavagai"</span> es verdad <span className="text-slate-500">si y solo si</span> <span className="text-amber-400">hay un conejo presente</span>.
+                    <span className="text-emerald-400">"Gavagai"</span> es verdadero <span className="text-slate-400 italic">en el Lenguaje del Sujeto</span> <span className="text-slate-500">si y solo si</span> <span className="text-amber-400">hay un conejo presente</span>.
                 </div>
                 <p className="mt-4 text-sm text-slate-400">
                 Nota: Solo las oraciones completas (enunciados) tienen condiciones de verdad. Incluso si el alienígena dice solo "Gorm" o "Hek", trátalos como acciones lingüísticas que afirman una verdad sobre el mundo.
