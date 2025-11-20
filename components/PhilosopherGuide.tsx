@@ -139,8 +139,14 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose, lan
             
              <p>
               {lang === 'es' 
-                ? "Tú (el Intérprete) correlacionas el comportamiento del Sujeto con los objetos del Mundo que ambos ven. Esta triangulación es lo que ancla el significado." 
-                : "You (the Interpreter) correlate the Subject's behavior with the objects in the World that you also see. This triangulation is what anchors meaning."}
+                ? "Tú (el Intérprete) correlacionas el comportamiento del Sujeto con los objetos del Mundo que ambos ven para intentar averiguar qué " 
+                : "You (the Interpreter) correlate the Subject's behavior with the objects in the World that you also see to try to figure out what the subject "}
+              <em className="text-emerald-400 font-semibold">
+                {lang === 'es' ? "toma" : "takes"}
+              </em>
+              {lang === 'es'
+                ? " el sujeto como verdadero en su lenguaje. Esta triangulación es lo que ancla el significado."
+                : " to be true in his language. This triangulation is what anchors meaning."}
               <span className="text-emerald-400 italic"> 
               {lang === 'es'
                ? " La Triangulación y la Caridad son parte del mismo proceso: "
@@ -158,7 +164,7 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose, lan
                 4. The Principle of Charity
                 </h3>
                 <p>
-                To get the triangulation started, you must assume the speaker is <strong>Rational</strong> and generally <strong>Correct</strong> about their environment.
+                To get the triangulation started, you must assume the speaker is <strong>Rational</strong> and generally <strong>Correct</strong> (by your own lights).
                 </p>
                 <ul className="list-disc list-inside mt-3 space-y-2 text-slate-400 text-sm">
                 <li>If the alien says "Gavagai" when a rabbit passes, assume they are referring to the rabbit (Truth), not deceiving you.</li>
@@ -182,7 +188,7 @@ export const PhilosopherGuide: React.FC<PhilosopherGuideProps> = ({ onClose, lan
                 4. El Principio de Caridad
                 </h3>
                 <p>
-                Para iniciar la triangulación, debes asumir que el hablante es <strong>Racional</strong> y generalmente está en lo <strong>Correcto</strong> sobre su entorno.
+                Para iniciar la triangulación, debes asumir que el hablante es <strong>Racional</strong> y generalmente está en lo <strong>Correcto</strong> (según tu propio criterio).
                 </p>
                 <ul className="list-disc list-inside mt-3 space-y-2 text-slate-400 text-sm">
                 <li>Si el alienígena dice "Gavagai" cuando pasa un conejo, asume que se refiere al conejo (Verdad), no que te está engañando.</li>

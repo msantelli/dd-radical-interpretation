@@ -88,6 +88,20 @@ This project is configured for instant deployment on Netlify.
 
 ---
 
+## 📝 Abridged Changelog
+
+*   **Hybrid Evaluation System:** Implemented dual-mode evaluation (Deterministic keyword matching vs AI-based) for zero-cost deployment.
+*   **Curriculum Expansion:** Added progressive levels introducing Reference (Level 1), Compositionality (Level 2), Negation (Level 3), and Quantification (Level 4).
+*   **Bilingual Support:** Full localization for English and Spanish (Español), including a randomized language selection screen.
+*   **Philosophical Accuracy:**
+    *   Refocused inputs from "Reference Axioms" to "T-Sentences" for whole utterances.
+    *   Implemented the Triangulation visualization.
+    *   Clarified the T-Schema relative to the "Language of the Subject".
+*   **Meta-Analysis Module:** Added a "Final Field Report" that compiles the user's T-Theory and offers a meta-linguistic reflection on the distinction between Object Language and Metalanguage.
+*   **UI/UX:** Created an immersive "terminal-style" interface with a dedicated Field Manual and About section.
+
+---
+
 ## 📚 Educational References
 
 *   **Donald Davidson**, *Inquiries into Truth and Interpretation* (1984) - specifically the essay "Radical Interpretation".
