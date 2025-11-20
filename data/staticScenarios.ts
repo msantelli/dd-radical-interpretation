@@ -14,7 +14,7 @@ const STATIC_SCENARIOS_EN: GameScenario[] = [
     vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto"],
     solutionKeywords: {
       "Gavagai": ["rabbit", "hare", "bunny", "animal", "critter", "mammal", "coney", "lapin"],
-      "Klaatu": ["run", "move", "fast", "go", "flee", "sprint", "dash", "motion", "moving", "escape"],
+      "Klaatu": ["run", "move", "fast", "go", "flee", "sprint", "dash", "motion", "moving", "escape", "scurry", "scurries"],
       "Barada": ["storm", "rain", "thunder", "weather", "wet", "pour", "lightning", "cloud", "tempest"],
       "Nikto": ["wolf", "predator", "danger", "enemy", "threat", "beast", "canine", "hunter"]
     },
@@ -259,10 +259,10 @@ const STATIC_SCENARIOS_ES: GameScenario[] = [
       alienName: "Sujeto Quine",
       vocabulary: ["Gavagai", "Klaatu", "Barada", "Nikto"],
       solutionKeywords: {
-        "Gavagai": ["conejo", "liebre", "conejito", "animal", "mamífero", "bicho", "roedor", "conejos"],
-        "Klaatu": ["correr", "corre", "mover", "rápido", "ir", "huye", "escapa", "movimiento", "veloz", "marcha", "carrera"],
-        "Barada": ["tormenta", "lluvia", "trueno", "clima", "llueve", "llover", "tempestad", "rayo", "agua", "nublado", "aguacero"],
-        "Nikto": ["lobo", "depredador", "peligro", "enemigo", "bestia", "canino", "perro", "amenaza", "cazador"]
+        "Gavagai": ["conejo", "coneja", "liebre", "conejito", "animal", "mamífero", "bicho", "roedor", "conejos"],
+        "Klaatu": ["correr", "corre", "corr", "huye", "huir", "huy", "mover", "movi", "desplaza", "rápido", "ir", "escap", "veloc", "marcha", "carrera"],
+        "Barada": ["tormenta", "lluvia", "trueno", "clima", "llueve", "llov", "tempestad", "rayo", "agua", "nublado", "aguacero", "mal tiempo"],
+        "Nikto": ["lobo", "loba", "depredador", "peligro", "enemigo", "bestia", "canino", "perro", "amenaza", "cazador"]
       },
       takeaways: [
         "La Verdad es lo Primitivo: No empezamos con la referencia (vínculos palabra-objeto). Empezamos asumiendo que las *oraciones* del alienígena son verdaderas en las circunstancias observadas.",
@@ -321,10 +321,10 @@ const STATIC_SCENARIOS_ES: GameScenario[] = [
       alienName: "Sujeto Tarski",
       vocabulary: ["Gorm", "Vell", "Ruz", "Zul"],
       solutionKeywords: {
-        "Gorm": ["piedra", "roca", "mineral", "guijarro", "piedras", "rocas", "pedrusco"],
+        "Gorm": ["piedra", "roca", "mineral", "guijarro", "piedras", "rocas", "pedrusco", "lito"],
         "Vell": ["cielo", "aire", "nube", "arriba", "atmósfera", "celeste", "firmamento", "espacio"],
-        "Ruz": ["rojo", "carmesí", "escarlata", "rubí", "colorado", "rojizo", "sangre"],
-        "Zul": ["azul", "celeste", "cian", "azulado", "zafiro", "marino", "turquesa"]
+        "Ruz": ["rojo", "roja", "rojos", "rojas", "carmesí", "escarlata", "rubí", "colorado", "colorada", "rojiz", "sangre"],
+        "Zul": ["azul", "azules", "celeste", "cian", "azulado", "zafiro", "marino", "turquesa"]
       },
       takeaways: [
         "Composicionalidad: El significado de 'Ruz Gorm' depende del significado de 'Ruz' más 'Gorm'.",
@@ -383,9 +383,9 @@ const STATIC_SCENARIOS_ES: GameScenario[] = [
       alienName: "Sujeto Boole",
       vocabulary: ["Zan", "Korn", "Xo"],
       solutionKeywords: {
-        "Zan": ["luz", "día", "sol", "brillante", "brilla", "iluminado", "claridad", "resplandor", "luminoso"],
-        "Korn": ["fuego", "llama", "quemar", "calor", "ardor", "incendio", "fogata", "caliente", "lumbre"],
-        "Xo": ["no", "negación", "falso", "ausencia", "sin", "nada", "tampoco", "falta", "carencia", "vacío"]
+        "Zan": ["luz", "día", "sol", "brillante", "brilla", "iluminado", "claridad", "resplandor", "luminoso", "alumbr"],
+        "Korn": ["fuego", "llama", "quemar", "quema", "calor", "ardor", "arde", "incendio", "fogata", "caliente", "lumbre"],
+        "Xo": ["no", "negación", "falso", "ausencia", "sin", "nada", "tampoco", "falta", "carencia", "vacío", "ni", "nulo"]
       },
       takeaways: [
         "Funciones de Verdad: 'Xo' es un operador lógico. Invierte el valor de verdad de la oración.",
@@ -444,10 +444,10 @@ const STATIC_SCENARIOS_ES: GameScenario[] = [
       alienName: "Sujeto Cantor",
       vocabulary: ["Hek", "Rond", "Sim", "Maka"],
       solutionKeywords: {
-        "Hek": ["cubo", "caja", "cuadrado", "bloque", "ladrillo", "dado", "cuadrangular"],
-        "Rond": ["esfera", "bola", "redondo", "orbe", "círculo", "pelota", "balón", "globular", "circular", "circulo", "globo"],
-        "Sim": ["uno", "un", "una", "existe", "singular", "individuo", "único", "solitario", "solo"],
-        "Maka": ["todo", "todos", "muchos", "grupo", "múltiple", "universal", "montón", "varios", "totalidad", "entero", "multitud"]
+        "Hek": ["cubo", "cubos", "caja", "cajas", "cuadrado", "cuadrados", "bloque", "bloques", "ladrillo", "dado", "cuadrangular"],
+        "Rond": ["esfera", "esferas", "bola", "bolas", "redondo", "redonda", "redondos", "redondas", "orbe", "círculo", "pelota", "balón", "globular", "circular", "circulo", "globo"],
+        "Sim": ["uno", "un", "una", "existe", "singular", "individuo", "único", "solitario", "solo", "sola"],
+        "Maka": ["todo", "todos", "toda", "todas", "mucho", "muchos", "mucha", "muchas", "grupo", "múltiple", "universal", "montón", "varios", "totalidad", "entero", "multitud"]
       },
       takeaways: [
         "Cuantificación: Pasamos de hablar de objetos específicos a hablar de conjuntos de objetos.",
