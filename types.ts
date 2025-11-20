@@ -4,7 +4,8 @@ export enum GameState {
   PLAYING = 'PLAYING',
   EVALUATING = 'EVALUATING',
   SUCCESS = 'SUCCESS',
-  FAILURE = 'FAILURE'
+  FAILURE = 'FAILURE',
+  CAMPAIGN_COMPLETE = 'CAMPAIGN_COMPLETE'
 }
 
 export type Language = 'en' | 'es';

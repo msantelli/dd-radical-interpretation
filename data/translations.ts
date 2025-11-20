@@ -34,7 +34,23 @@ export const TRANSLATIONS = {
     guideTitle: "FIELD MANUAL: RADICAL INTERPRETATION",
     close: "ACKNOWLEDGE & CLOSE",
     loading: "LOADING LEVEL",
-    subject: "SUBJECT"
+    subject: "SUBJECT",
+    
+    // Final Report
+    finalReport: "FINAL FIELD REPORT",
+    compiledLexicon: "COMPILED LEXICON",
+    lexiconIntro: "Summary of T-Theories constructed during this session:",
+    metaReflection: "META-LINGUISTIC REFLECTION",
+    reflectionIntro: "Throughout this session, you constructed a T-Theory for multiple dialects. This process highlights the distinct roles of languages in the T-Schema:",
+    objectLangTitle: "1. The Object Language (Mentioned)",
+    objectLangDesc: "The alien words (e.g., 'Gavagai') are inside quotes. We are talking *about* them, not using them.",
+    metaLangTitle: "2. The Metalanguage (Used)",
+    metaLangDesc: "The language on the right side (English/Spanish) is the one you understand. You *use* it to state the conditions under which the alien sentence is true.",
+    tSchemaTitle: "3. The Truth Predicate",
+    tSchemaDesc: "The phrase 'is true if and only if' acts as the bridge. It lifts the alien sounds into the realm of meaning by anchoring them to the shared world.",
+    whyAsked: "Why we asked for your language:",
+    whyAskedDesc: "We asked 'Which language do you understand?' at the start because a T-Theory must be stated in a language the interpreter already knows. You cannot interpret the unknown with the unknown.",
+    restartCampaign: "START NEW CAMPAIGN"
   },
   es: {
     title: "INTÉRPRETE RADICAL",
@@ -71,6 +87,22 @@ export const TRANSLATIONS = {
     guideTitle: "MANUAL DE CAMPO: INTERPRETACIÓN RADICAL",
     close: "ENTENDIDO Y CERRAR",
     loading: "CARGANDO NIVEL",
-    subject: "SUJETO"
+    subject: "SUJETO",
+
+    // Final Report
+    finalReport: "INFORME DE CAMPO FINAL",
+    compiledLexicon: "LÉXICO COMPILADO",
+    lexiconIntro: "Resumen de las Teorías-T construidas durante esta sesión:",
+    metaReflection: "REFLEXIÓN METALINGÜÍSTICA",
+    reflectionIntro: "A lo largo de esta sesión, has construido una Teoría-T para múltiples dialectos. Este proceso resalta los roles distintivos de los lenguajes en el Esquema-T:",
+    objectLangTitle: "1. El Lenguaje Objeto (Mencionado)",
+    objectLangDesc: "Las palabras alienígenas (ej. 'Gavagai') están entre comillas. Estamos hablando *acerca* de ellas, no usándolas.",
+    metaLangTitle: "2. El Metalenguaje (Usado)",
+    metaLangDesc: "El idioma del lado derecho (Inglés/Español) es el que tú entiendes. Lo *usas* para establecer las condiciones bajo las cuales la oración alienígena es verdadera.",
+    tSchemaTitle: "3. El Predicado de Verdad",
+    tSchemaDesc: "La frase 'es verdad si y solo si' actúa como el puente. Eleva los sonidos alienígenas al reino del significado anclándolos al mundo compartido.",
+    whyAsked: "Por qué preguntamos tu idioma:",
+    whyAskedDesc: "Preguntamos '¿Qué idioma hablás?' al principio porque una Teoría-T debe enunciarse en un idioma que el intérprete ya conoce. No puedes interpretar lo desconocido con lo desconocido.",
+    restartCampaign: "INICIAR NUEVA CAMPAÑA"
   }
 };

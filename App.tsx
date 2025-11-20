@@ -4,6 +4,7 @@ import { evaluatePlayerTheory } from './services/geminiService';
 import { FieldNotes } from './components/FieldNotes';
 import { PhilosopherGuide } from './components/PhilosopherGuide';
 import { AboutModal } from './components/AboutModal';
+import { FinalReport } from './components/FinalReport';
 import { getScenarios } from './data/staticScenarios';
 import { Icons } from './constants';
 import { TRANSLATIONS } from './data/translations';
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   const [scenario, setScenario] = useState<GameScenario | null>(null);
   const [currentObsIndex, setCurrentObsIndex] = useState(0);
   const [theory, setTheory] = useState<PlayerTheory>({});
+  const [campaignTheories, setCampaignTheories] = useState<Record<number, PlayerTheory>>({});
   const [evaluation, setEvaluation] = useState<EvaluationResult | null>(null);
   const [showGuide, setShowGuide] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
@@ -74,14 +76,26 @@ const App: React.FC = () => {
   };
 
   const handleNextLevel = () => {
+    // Save current theory to campaign history
+    setCampaignTheories(prev => ({
+        ...prev,
+        [currentLevel]: theory
+    }));
     setEvaluation(null);
-    startGame(currentLevel + 1);
+
+    if (hasNextLevel) {
+        startGame(currentLevel + 1);
+    } else {
+        setGameState(GameState.CAMPAIGN_COMPLETE);
+    }
   };
 
   const handleRestart = () => {
     setScenario(null);
     setEvaluation(null);
     setTheory({});
+    setCampaignTheories({});
+    setCurrentLevel(0);
     setGameState(GameState.INTRO);
   };
 
@@ -136,6 +150,18 @@ const App: React.FC = () => {
             </div>
         </div>
       );
+  }
+  
+  // Final Report Screen
+  if (gameState === GameState.CAMPAIGN_COMPLETE) {
+    return (
+        <FinalReport 
+            campaignTheories={campaignTheories} 
+            scenarios={scenarios} 
+            lang={appLanguage}
+            onRestart={handleRestart}
+        />
+    );
   }
 
   // Introduction Screen
@@ -422,12 +448,15 @@ const App: React.FC = () => {
                   {t.proceedNext} {currentLevel + 2} <Icons.ArrowRight />
                 </button>
               )}
-
-              {!hasNextLevel && (
-                <div className="p-4 bg-amber-500/10 border border-amber-500/30 rounded text-amber-200 font-mono text-center">
-                  🎓 {t.complete} <br/>
-                  {t.completeSub}
-                </div>
+              
+              {/* Case: Campaign Complete (Success on Last Level) */}
+              {gameState === GameState.SUCCESS && !hasNextLevel && (
+                <button 
+                  onClick={handleNextLevel}
+                  className="px-4 py-4 bg-emerald-600 hover:bg-emerald-500 rounded text-white font-mono font-bold text-lg transition-colors w-full shadow-lg shadow-emerald-900/20 flex items-center justify-center gap-2 animate-pulse"
+                >
+                   🎓 {t.complete} <Icons.Book />
+                </button>
               )}
             </div>
           </div>
