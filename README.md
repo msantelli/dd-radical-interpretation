@@ -119,4 +119,4 @@ This project is configured for instant deployment on Netlify.
 
 ---
 
-*Built for the love of logic.*
+*Built for the love of logic. (Gemini 3 dixit)*
